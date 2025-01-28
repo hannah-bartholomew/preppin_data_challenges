@@ -1,0 +1,44 @@
+-- Main Query
+
+select value
+,customer_code
+,case when online_or_in_person=1 then 'Online'
+when online_or_in_person=2 then 'In Person'
+end as online_in_person
+,dayname(to_date(transaction_date, 'DD/MM/YYYY HH:MI:SS')) as transaction_day
+,split_part(transaction_code,'-',1) as Bank
+
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK01
+
+
+-- Answer 1
+
+select sum(value)
+,split_part(transaction_code,'-',1) as Bank
+
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK01
+group by Bank
+
+
+--Answer 2
+
+select sum(value)
+,case when online_or_in_person=1 then 'Online'
+when online_or_in_person=2 then 'In Person'
+end as online_in_person
+,dayname(to_date(transaction_date, 'DD/MM/YYYY HH:MI:SS')) as transaction_day
+,split_part(transaction_code,'-',1) as Bank
+
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK01
+group by online_or_in_person, transaction_day, Bank
+
+
+--Answer 3
+
+select
+customer_code
+,split_part(transaction_code,'-',1) as Bank
+,sum(value)
+
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK01
+group by 1,2
