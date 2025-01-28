@@ -1,0 +1,31 @@
+with targets as (
+select online_or_in_person
+,to_number(replace(quarter, 'Q','')) as quarter
+,target
+
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK03_TARGETS
+
+unpivot(target for quarter in (Q1,Q2,Q3,Q4))
+)
+,
+transactions as(
+select
+quarter(to_date(transaction_date, 'DD/MM/YYYY HH:MI:SS')) as quarter
+,case online_or_in_person 
+when 1 then 'Online' 
+when 2 then 'In-Person' 
+end as ONLINE_OR_IN_PERSON
+,sum(value) as total_value
+
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK01
+where contains(transaction_code,'DSB')
+group by 1,2
+)
+
+select T.online_or_in_person
+,total_value
+,T.quarter
+,target
+,total_value-target as variance_to_target
+from transactions as T
+inner join targets as V on T.quarter=V.quarter and V.ONLINE_OR_IN_PERSON=T.online_or_in_person
