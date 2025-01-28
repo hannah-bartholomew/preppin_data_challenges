@@ -1,0 +1,7 @@
+select
+    'GB' || check_digits || swift_code || trim(sort_code, '-') || account_number as IBAN
+    , transaction_id
+    
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK02_TRANSACTIONS t
+    inner join TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK02_SWIFT_CODES sc
+    on t.bank=sc.bank
