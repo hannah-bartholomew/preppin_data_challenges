@@ -1,0 +1,64 @@
+with unioned as (
+select*
+,date_from_parts(2023,01,joining_day) as Join_Date
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK04_JANUARY
+union all
+select *
+,date_from_parts(2023,02,joining_day) as Join_Date
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK04_FEBRUARY
+union all
+select *
+,date_from_parts(2023,03,joining_day) as Join_Date
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK04_MARCH
+union all
+select *
+,date_from_parts(2023,04,joining_day) as Join_Date
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK04_APRIL
+union all
+select *
+,date_from_parts(2023,05,joining_day) as Join_Date
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK04_MAY
+union all
+select *
+,date_from_parts(2023,06,joining_day) as Join_Date
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK04_JUNE
+union all 
+select *
+,date_from_parts(2023,07,joining_day) as Join_Date
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK04_JULY
+union all
+select *
+,date_from_parts(2023,08,joining_day) as Join_Date
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK04_AUGUST
+union all
+select *
+,date_from_parts(2023,09,joining_day) as Join_Date
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK04_SEPTEMBER
+union all
+select *
+,date_from_parts(2023,10,joining_day) as Join_Date
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK04_OCTOBER
+union all
+select *
+,date_from_parts(2023,11,joining_day) as Join_Date
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK04_NOVEMBER
+union all
+select *
+,date_from_parts(2023,12,joining_day) as Join_Date
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK04_DECEMBER
+)
+
+,POST_PIVOT AS(
+select *
+from unioned
+pivot (min(value) for demographic in ('Ethnicity','Account Type','Date of Birth')) as P
+(ID,JOINING_DAY,JOIN_DATE,ETHNICITY,ACCOUNT_TYPE,DATE_OF_BIRTH)
+)
+
+SELECT ID
+,JOINING_DAY
+,JOIN_DATE
+,ETHNICITY
+,ACCOUNT_TYPE
+,TO_DATE(DATE_OF_BIRTH,'MM/dd/yyyy') as DATE_OF_BIRTH
+from post_pivot
