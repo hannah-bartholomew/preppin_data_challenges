@@ -1,0 +1,31 @@
+with cte as(
+select sum(value) as value
+,split_part(transaction_code,'-',1) as Bank
+,month(TO_DATE(transaction_date, 'dd/MM/yyyy HH:MI:SS')) as transaction_month
+,rank() over (partition by transaction_month order by sum(value) desc) as rank
+
+from TIL_PLAYGROUND.PREPPIN_DATA_INPUTS.PD2023_WK01
+
+group by transaction_month, Bank
+)
+
+, avg_rank as(
+select round(avg(rank),1) as avg_rank_per_bank
+,bank
+from cte
+group by bank
+)
+
+, avg_transaction as(
+select round(avg(value),2) as avg_transaction_value_per_bank
+,rank
+from cte
+group by rank
+)
+
+select *
+from cte as c
+inner join avg_rank as r 
+on c.Bank=r.Bank
+inner join avg_transaction as t
+on c.rank=t.rank
